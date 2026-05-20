@@ -22,12 +22,16 @@ func main() {
     }
     defer database.Close()
 
+    if err := db.RunMigrations(database); err != nil {
+        log.Fatalf("migration error: %v", err)
+    }
+
 	port := os.Getenv("PORT")
     if port == "" {
         port = "8000"
     }
 
-	r := router.SetupRouter()
+	r := router.SetupRouter(database, os.Getenv("JWT_SECRET"))
 
 	// run server
 	r.Run(fmt.Sprintf(":%s", port))
