@@ -12,3 +12,30 @@ CREATE TABLE IF NOT EXISTS approvals (
     requester BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE,
     approver BIGINT NOT NULL REFERENCES users(id) ON DELETE CASCADE
 );
+
+CREATE TABLE IF NOT EXISTS inventories (
+    id BIGSERIAL PRIMARY KEY,
+    item_code VARCHAR(100) NOT NULL,
+    item_name VARCHAR(255) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    unit VARCHAR(50) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    created_by VARCHAR(100) NOT NULL,
+    updated_by VARCHAR(100) NOT NULL
+);
+
+CREATE TABLE IF NOT EXISTS batches (
+    id BIGSERIAL PRIMARY KEY,
+    item_code VARCHAR(100) NOT NULL,
+    item_name VARCHAR(255) NOT NULL,
+    created_at TIMESTAMP NOT NULL,
+    updated_at TIMESTAMP NOT NULL,
+    created_by VARCHAR(100) NOT NULL,
+    updated_by VARCHAR(100) NOT NULL,
+    stock DECIMAL(10,2) NOT NULL,
+    status VARCHAR(50) NOT NULL,
+    batch_number VARCHAR(100) NOT NULL,
+    expired_date TIMESTAMP NOT NULL,
+    stock_date TIMESTAMP NOT NULL
+);
