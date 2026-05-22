@@ -37,6 +37,15 @@ func SetupRouter(db *sqlx.DB, jwtSecret string) *gin.Engine {
 	batchSvc := service.NewBatchService(batchRepo)
 	batchHandler := handler.NewBatchHandler(batchSvc)
 
+	discountRepo := repository.NewDiscountRepository(db)
+	discountSvc := service.NewDiscountService(discountRepo)
+	discountHandler := handler.NewDiscountHandler(discountSvc)
+
+	transactionRepo := repository.NewTransactionRepository(db)
+	detailRepo := repository.NewSalesDetailRepository(db)
+	transactionSvc := service.NewTransactionService(transactionRepo, detailRepo)
+	transactionHandler := handler.NewTransactionHandler(transactionSvc)
+
 	api := r.Group("/api/v1")
 	{
 		api.GET("/", func(c *gin.Context) {
@@ -74,6 +83,26 @@ func SetupRouter(db *sqlx.DB, jwtSecret string) *gin.Engine {
 			batch.PUT("/:id", batchHandler.UpdateBatch)
 			batch.DELETE("/:id", batchHandler.DeleteBatch)
 			batch.GET("", batchHandler.ListBatches)
+		}
+
+		// Discount group
+		discount := api.Group("/discounts")
+		{
+			discount.POST("", discountHandler.CreateDiscount)
+			discount.GET("/:id", discountHandler.GetDiscount)
+			discount.PUT("/:id", discountHandler.UpdateDiscount)
+			discount.DELETE("/:id", discountHandler.DeleteDiscount)
+			discount.GET("", discountHandler.ListDiscounts)
+		}
+
+		// Transaction group
+		transaction := api.Group("/transactions")
+		{
+			transaction.POST("", transactionHandler.CreateSales)
+			transaction.GET("/:id", transactionHandler.GetSales)
+			transaction.PUT("/:id", transactionHandler.UpdateSales)
+			transaction.DELETE("/:id", transactionHandler.DeleteSales)
+			transaction.GET("", transactionHandler.ListSales)
 		}
 	}
 
